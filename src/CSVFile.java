@@ -1,6 +1,12 @@
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 // A .csv file loaded into memory as a table, with header and body.
 public class CSVFile {
@@ -31,29 +37,70 @@ public class CSVFile {
 
     // Return the nth row of the CSV as a HashMap (this can be used to edit entries!)
     public HashMap<String, String> getRow(int row) {
-        // TODO: implement
-        return null;
+        return this.body.get(row);
     }
 
     // Add a new row to the CSV
     public void addRow(HashMap<String, String> row) {
-        // TODO: implement
+        this.body.add(row);
     }
 
     // Load a CSVFile from the given filename.
     public static CSVFile load(String filename) throws IOException {
-        // TODO: implement.
-        return null;
+        String[][] data = (String[][])
+            // read all the lines in the file into a String[]
+            Files.readAllLines(new File(filename).toPath())
+            // iterate over them
+            .stream()
+            // remove extra spaces on the ends of each line
+            .map(s -> s.trim())
+            // if the line is empty, don't count it
+            .filter(s -> !s.isEmpty())
+            // split the line on ",". From now on, we're iterating on a list of String[]'s
+            .map(s -> s.split(","))
+            // for each row, replace the row with:
+            .map(ss ->
+                Arrays
+                    // for each column in the row:
+                    .stream(ss)
+                    // remove the extra spaces on each end (e.g. for parsing numbers)
+                    .map(s -> s.trim())
+                    // make the line String[] again
+                    .toArray()
+            )
+            // make the data String[][] again
+            .toArray();
+
+        // call the contructor with our data:
+        return new CSVFile(data);
     }
 
     // Save a CSVFile to the given filename.
     public static void save(String filename, CSVFile csv) throws IOException {
-        // TODO: implement.
+        try (FileWriter fileWriter = new FileWriter(filename)) {
+            try (PrintWriter printWriter = new PrintWriter(fileWriter)) {
+                // print the header
+                printWriter.println(String.join(",", csv.fields));
+
+                for (HashMap<String, String> row : csv.body) {
+                    for (int i = 0; i < csv.fields.length; i++) {
+                        printWriter.print(row.get(csv.fields[i]));
+
+                        if (i != csv.fields.length - 1) {
+                            // Skip only the last comma
+                            printWriter.print(",");
+                        }
+                    }
+
+                    printWriter.println();
+                }
+            }
+        }
     }
 
     // Create an empty CSVFile with the given headers.
     public static CSVFile empty(String[] header) {
-        // TODO: implement.
-        return null;
+        // Make a CSV with only a header
+        return new CSVFile(new String[][]{header});
     }
 }
