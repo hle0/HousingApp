@@ -1,36 +1,43 @@
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 // A .csv file loaded into memory as a table, with header and body.
 public class CSVFile {
     // The first line of the CSV file is the header.
     // It's in the same format as all the other rows, but it has the column names instead of actual values.
-    private String[] header;
+    private String[] fields;
     // The stuff past the header.
-    private String[][] body;
+    private ArrayList<HashMap<String, String>> body;
 
     public CSVFile(String[][] data) {
         // Copy the header
-        this.header = data[0];
+        this.fields = data[0];
+
         // Copy the rest of the data
-        this.body = Arrays.copyOfRange(data, 1, data.length);
+        this.body = new ArrayList<>();
+        // don't include the first line (int i = 1; ...)
+        for (int i = 1; i < data.length; i++) {
+            HashMap<String, String> row = new HashMap<>();
+
+            for (int j = 0; j < this.fields.length; j++) {
+                // key is the column name, value is the actual value
+                row.put(this.fields[j], data[i][j]);
+            }
+
+            this.body.add(row);
+        }
     }
 
-    // Return the entry at the row-th row of body and the column given by column.
-    public String getEntry(String column, int row) {
-        // TODO: implement.
-        return "";
+    // Return the nth row of the CSV as a HashMap (this can be used to edit entries!)
+    public HashMap<String, String> getRow(int row) {
+        // TODO: implement
+        return null;
     }
 
-    // Add a row to the CSVFile.
-    public void advanceRow() {
-        // TODO: implement.
-    }
-
-    // Set an entry in the last row. Meant to be used with advanceRow().
-    public String setEntry(String column, String entry) {
-        // TODO: implement.
-        return "";
+    // Add a new row to the CSV
+    public void addRow(HashMap<String, String> row) {
+        // TODO: implement
     }
 
     // Load a CSVFile from the given filename.
@@ -44,7 +51,7 @@ public class CSVFile {
         // TODO: implement.
     }
 
-    // Create an empty CSVFile with the given header.
+    // Create an empty CSVFile with the given headers.
     public static CSVFile empty(String[] header) {
         // TODO: implement.
         return null;
