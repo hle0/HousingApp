@@ -35,6 +35,12 @@ public class CSVFile {
         }
     }
 
+    // Return the number of rows in the CSV file
+    public int getLength()
+    {
+        return this.body.size();
+    }
+
     // Return the nth row of the CSV as a HashMap (this can be used to edit entries!)
     public HashMap<String, String> getRow(int row) {
         return this.body.get(row);
