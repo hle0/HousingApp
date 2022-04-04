@@ -16,25 +16,24 @@ public class Lottery implements Resolver {
 		for (int i = 0; i < studentChoices.getLength(); i++) {
 			HashMap<String, String> row = studentChoices.getRow(i);
 			HashMap<String, String> studentEntry = new HashMap<String, String>();
-			//HashMap<String, String> finalResult = new HashMap<String, String>();
 			String firstChoice = row.get("First");
 			String secondChoice = row.get("Second");
 			int numSeats = seats.get(firstChoice);
 			int numSSeats = seats.get(secondChoice);
 			
-			studentEntry.put("Student", row.get("Student"));
+			studentEntry.put("Student "," " + row.get("Student"));
 			
 			
 			if(numSeats > 0)
 			{
 				seats.put(firstChoice, numSeats - 1);
-				studentEntry.put("Dorm", firstChoice);
+				studentEntry.put("Dorm ", " " + firstChoice);
 				//Output.addRow();
 			}
 			else if(numSSeats > 0)
 			{
 				seats.put(secondChoice, numSSeats - 1);
-				studentEntry.put("Dorm", secondChoice);
+				studentEntry.put("Dorm ", " " + secondChoice);
 				
 			}
 			else
@@ -46,8 +45,8 @@ public class Lottery implements Resolver {
 					int remainSeat = seats.get(getDorm);
 					if(remainSeat > 0)
 					{
-						seats.put("Dorm", remainSeat - 1);
-						studentEntry.put("Dorm", getDorm);
+						seats.put("Dorm ", remainSeat - 1);
+						studentEntry.put("Dorm ", getDorm);
 					}
 					else
 					{
