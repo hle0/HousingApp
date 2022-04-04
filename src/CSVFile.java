@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,32 +54,21 @@ public class CSVFile {
 
     // Load a CSVFile from the given filename.
     public static CSVFile load(String filename) throws IOException {
-        String[][] data = (String[][])
-            // read all the lines in the file into a String[]
-            Files.readAllLines(new File(filename).toPath())
-            // iterate over them
-            .stream()
+        ArrayList<String[]> data = new ArrayList<>();
+        // read all the lines in the file
+        for (String s : Files.readAllLines(new File(filename).toPath())) {
             // remove extra spaces on the ends of each line
-            .map(s -> s.trim())
+            s = s.trim();
             // if the line is empty, don't count it
-            .filter(s -> !s.isEmpty())
-            // split the line on ",". From now on, we're iterating on a list of String[]'s
-            .map(s -> s.split(","))
-            // for each row, replace the row with:
-            .map(ss ->
-                Arrays
-                    // for each column in the row:
-                    .stream(ss)
-                    // remove the extra spaces on each end (e.g. for parsing numbers)
-                    .map(s -> s.trim())
-                    // make the line String[] again
-                    .toArray()
-            )
-            // make the data String[][] again
-            .toArray();
+            if (s.isEmpty()) {
+                continue;
+            }
 
-        // call the contructor with our data:
-        return new CSVFile(data);
+            // split the line on ",".
+            data.add(s.split(","));
+        }
+
+        return new CSVFile(data.toArray(new String[data.size()][]));
     }
 
     // Save a CSVFile to the given filename.
